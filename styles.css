@@ -8,3 +8,5 @@
 @media(max-width:370px){.container{width:calc(100% - 30px)}.utility-inner>span{font-size:8px}.brand strong{font-size:19px}.brand small{font-size:5px}h1{font-size:34px}.hero-actions .button{gap:12px;font-size:11px}.college-card{padding-inline:12px}.college-card h3{font-size:16px}.college-description{font-size:10px}.college-bottom{font-size:8px}.section-head h2{font-size:26px}.admission-brand>b{display:none}}
 .utility-links{display:flex;align-items:center;gap:24px;flex-shrink:0}.utility-links a{white-space:nowrap}@media(max-width:760px){.utility-location{display:none}.utility-links{gap:16px}.utility-inner{gap:8px}}@media(max-width:370px){.utility-links{gap:12px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition:none!important;animation:none!important}}
+@media(max-width:760px){.utility-inner{height:auto;min-height:30px;padding-block:6px;justify-content:center}.utility-inner>span{display:none}.utility-links{flex-shrink:1;flex-wrap:wrap;justify-content:center;gap:4px 16px}}
+@media(max-width:430px){.utility-links{display:grid;grid-template-columns:auto auto;justify-content:center}}
