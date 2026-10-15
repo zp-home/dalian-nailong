@@ -405,6 +405,7 @@
     const resetEnrollment = () => {
       if (!enrollForm || !enrollResult) return;
       currentCard = null;
+      clearPNG();
       enrollForm.reset();
       enrollForm.querySelectorAll('input, select').forEach((field) => field.setCustomValidity(''));
       enrollResult.hidden = true;
@@ -416,13 +417,10 @@
     const resetButton = document.querySelector('#enroll-reset');
     if (resetButton) resetButton.addEventListener('click', resetEnrollment);
 
-    const downloadButton = document.querySelector('#download-card');
-    if (downloadButton) {
-      downloadButton.addEventListener('click', () => {
-        if (!currentCard || typeof URL.createObjectURL !== 'function') return;
-        const card = Object.fromEntries(Object.entries(currentCard).map(([key, value]) => [key, escapeXML(value)]));
-        // All user-provided content is escaped before being embedded in the SVG.
-        const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="680" viewBox="0 0 1120 680">
+    const createCardSVG = (cardData) => {
+      const card = Object.fromEntries(Object.entries(cardData).map(([key, value]) => [key, escapeXML(value)]));
+      // All user-provided content is escaped before being embedded in the SVG.
+      return `<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="680" viewBox="0 0 1120 680">
           <title>大连奶龙大学校园趣味纪念卡</title>
           <desc>昵称 ${card.name}，脑洞学院 ${card.college}。仅为趣味纪念，不是录取凭证。</desc>
           <rect width="1120" height="680" rx="36" fill="#f7f4eb"/>
@@ -436,7 +434,7 @@
             <text x="144" y="116" font-size="15" letter-spacing="3" fill="#c8d8cc">DALIAN MILKDRAGON UNIVERSITY</text>
             <text x="1043" y="91" text-anchor="end" font-size="17" fill="#f9ce44" letter-spacing="3">校园趣味纪念卡</text>
             <text x="73" y="220" font-size="15" letter-spacing="3" fill="#62776c">A LITTLE CURIOSITY. A BIG NEW WORLD.</text>
-            <text x="69" y="302" font-size="${currentCard.name.length > 8 ? 40 : 52}" font-weight="700" fill="#183b32">${card.name}</text>
+            <text x="69" y="302" font-size="${cardData.name.length > 8 ? 40 : 52}" font-weight="700" fill="#183b32">${card.name}</text>
             <text x="74" y="349" font-size="22" fill="#183b32">欢迎加入 ${card.college}</text>
             <path d="M74 386h572" stroke="#c7cdc0"/>
             <text x="74" y="423" font-size="15" fill="#62776c">纪念编号</text>
@@ -465,15 +463,98 @@
             <path d="m4 30 6-13 7 13 14 3-11 10 2 15-12-7-13 7 3-15-11-10z" fill="#f9ce44" stroke="none"/>
           </g>
         </svg>`;
-        const blob = new Blob([svg], { type: 'image/svg+xml;charset=utf-8' });
-        const url = URL.createObjectURL(blob);
+    };
+
+    const cardFilename = (card, extension) => `大连奶龙大学-校园纪念卡-${card.id}.${extension}`;
+    const svgBlob = (card) => new Blob([createCardSVG(card)], { type: 'image/svg+xml;charset=utf-8' });
+    const downloadButton = document.querySelector('#download-card');
+    if (downloadButton) {
+      downloadButton.addEventListener('click', () => {
+        if (!currentCard || typeof URL.createObjectURL !== 'function') return;
+        const url = URL.createObjectURL(svgBlob(currentCard));
         const link = document.createElement('a');
         link.href = url;
-        link.download = `大连奶龙大学-校园纪念卡-${currentCard.id}.svg`;
+        link.download = cardFilename(currentCard, 'svg');
         document.body.append(link);
         link.click();
         link.remove();
         window.setTimeout(() => URL.revokeObjectURL(url), 30000);
+      });
+    }
+
+    const pngButton = document.querySelector('#generate-png');
+    const pngPreview = document.querySelector('#png-preview');
+    const pngImage = document.querySelector('#png-image');
+    const pngDownload = document.querySelector('#download-png');
+    const pngStatus = document.querySelector('#png-status');
+    let pngURL = null;
+    let pngGeneration = 0;
+
+    const clearPNG = () => {
+      pngGeneration += 1;
+      if (pngImage) pngImage.removeAttribute('src');
+      if (pngDownload) pngDownload.removeAttribute('href');
+      if (pngURL) URL.revokeObjectURL(pngURL);
+      pngURL = null;
+      if (pngPreview) pngPreview.hidden = true;
+      if (pngStatus) pngStatus.textContent = '';
+      if (pngButton) {
+        pngButton.disabled = false;
+        pngButton.textContent = '生成 PNG 图片';
+      }
+    };
+
+    const renderPNG = async (card) => {
+      const sourceURL = URL.createObjectURL(svgBlob(card));
+      try {
+        const image = new Image();
+        await new Promise((resolve, reject) => {
+          image.onload = resolve;
+          image.onerror = () => reject(new Error('图片加载失败'));
+          image.src = sourceURL;
+        });
+        const canvas = document.createElement('canvas');
+        canvas.width = 2240;
+        canvas.height = 1360;
+        const context = canvas.getContext('2d');
+        if (!context) throw new Error('无法创建画布');
+        context.drawImage(image, 0, 0, canvas.width, canvas.height);
+        return await new Promise((resolve, reject) => {
+          canvas.toBlob((blob) => blob ? resolve(blob) : reject(new Error('图片转换失败')), 'image/png');
+        });
+      } finally {
+        URL.revokeObjectURL(sourceURL);
+      }
+    };
+
+    if (pngButton && pngPreview && pngImage && pngDownload && pngStatus) {
+      pngButton.addEventListener('click', async () => {
+        if (!currentCard || pngButton.disabled) return;
+        clearPNG();
+        const generation = pngGeneration;
+        const card = { ...currentCard };
+        pngButton.disabled = true;
+        pngButton.textContent = '正在生成…';
+        pngStatus.textContent = '正在生成 PNG 图片，请稍候。';
+        try {
+          const blob = await renderPNG(card);
+          if (generation !== pngGeneration) return;
+          pngURL = URL.createObjectURL(blob);
+          pngImage.src = pngURL;
+          pngDownload.href = pngURL;
+          pngDownload.download = cardFilename(card, 'png');
+          pngPreview.hidden = false;
+          pngStatus.textContent = '图片已生成，可下载 PNG；手机也可长按图片保存。';
+          pngPreview.scrollIntoView({ block: 'nearest', behavior: reduceMotion() ? 'instant' : 'smooth' });
+        } catch {
+          if (generation !== pngGeneration) return;
+          pngStatus.textContent = 'PNG 生成失败，请重试，或选择下载 SVG。';
+        } finally {
+          if (generation === pngGeneration) {
+            pngButton.disabled = false;
+            pngButton.textContent = '生成 PNG 图片';
+          }
+        }
       });
     }
 

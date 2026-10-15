@@ -10,3 +10,6 @@
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition:none!important;animation:none!important}}
 @media(max-width:760px){.utility-inner{height:auto;min-height:30px;padding-block:6px;justify-content:center}.utility-inner>span{display:none}.utility-links{flex-shrink:1;flex-wrap:wrap;justify-content:center;gap:4px 16px}}
 @media(max-width:430px){.utility-links{display:grid;grid-template-columns:auto auto;justify-content:center}}
+
+/* Card export controls and mobile image saving. */
+.result-actions{flex-wrap:wrap}.result-actions .button{flex:1 1 120px}.button:disabled{cursor:wait;opacity:.65}#png-preview{margin-top:18px}#png-image{width:100%;height:auto}#download-png{display:flex;justify-content:center;margin-top:14px}
