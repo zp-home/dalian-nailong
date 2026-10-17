@@ -407,7 +407,6 @@
         filterButtons.forEach((filter) => {
           const active = filter === button;
           filter.setAttribute('aria-pressed', String(active));
-          filter.classList.toggle('is-active', active);
         });
         newsArticles.forEach((article) => {
           article.hidden = category !== 'all' && !article.dataset.category.split(/\s+/).includes(category);
@@ -435,7 +434,5 @@
       });
       updateBackToTop();
     }
-
-    document.documentElement.classList.add('js-ready');
   });
 })();
