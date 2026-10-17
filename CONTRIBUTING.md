@@ -33,7 +33,8 @@
 线上有 CSP 和 CDN 缓存，下面几条本地预览时看不出问题，上线后才会出错：
 
 - **CSP**：不写内联 `<script>` / `<style>` / `style=""` / `onclick=`，不引用外部 CDN 资源。细则见 README「内容安全策略」。
-- **缓存版本号**：改了 `styles.css` 或 `app.js`，就要在 `index.html` 里把对应的 `?v=N` 加 1。
-- **新增学院**：`app.js` 的 `colleges`、`#colleges` 卡片、`#student-college` 的 `<option>`，三处都要改。
+- **缓存版本号**：改了 `styles.css` 或 `app.js`，就要在 `index.html` 里把对应的 `?v=N` 加 1。顶栏、页脚、版本号在全部页面保持一致（首页、`clubs.html`、`colleges/` 下的六个页面）。
+- **真实学生组织页**：`clubs.html` 讲的是真实组织，改文案前先读 README「真实学生组织页」的来源分层与禁止编造约束。
+- **新增学院**：`app.js` 的 `colleges`、`#colleges` 卡片、`colleges/` 下新建的页面、`#student-college` 的 `<option>`，四处都要改。
 - **新增或删除图片**：同步更新 README 的目录结构。
 - **新增不上线的文件**（文档、配置）：在 `.gitattributes` 中标 `export-ignore`；如果只改它不需要重新部署，再加进 `deploy.yml` 的 `paths-ignore`。
