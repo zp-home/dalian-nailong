@@ -436,6 +436,55 @@
       updateBackToTop();
     }
 
+    // 导航跟随滚动：标出当前所在的分节（只在同页锚点上生效，学院页不动）
+    if (navigation) {
+      const here = window.location.pathname.replace(/\/index\.html$/, '/');
+      const watched = [];
+      Array.from(navigation.querySelectorAll('a[href]')).forEach((link) => {
+        const target = new URL(link.getAttribute('href'), window.location.href);
+        const path = target.pathname.replace(/\/index\.html$/, '/');
+        const section = target.hash.slice(1);
+        if (!section) {
+          if (path === here) link.setAttribute('aria-current', 'page');
+          return;
+        }
+        if (path === here && document.getElementById(section)) watched.push({ link, section });
+      });
+
+      if (watched.length) {
+        let current = null;
+        let framePending = false;
+        const updateCurrent = () => {
+          framePending = false;
+          const line = window.innerHeight * 0.4;
+          let active = '';
+          let activeTop = -Infinity;
+          watched.forEach(({ section }) => {
+            const rect = document.getElementById(section).getBoundingClientRect();
+            if (rect.top <= line && rect.top > activeTop) {
+              activeTop = rect.top;
+              active = section;
+            }
+          });
+          if (active === current) return;
+          current = active;
+          watched.forEach(({ link, section }) => {
+            if (section === active) link.setAttribute('aria-current', 'location');
+            else link.removeAttribute('aria-current');
+          });
+        };
+        const requestUpdate = () => {
+          if (framePending) return;
+          framePending = true;
+          window.requestAnimationFrame(updateCurrent);
+        };
+        window.addEventListener('scroll', requestUpdate, { passive: true });
+        window.addEventListener('resize', requestUpdate);
+        window.addEventListener('load', requestUpdate);
+        updateCurrent();
+      }
+    }
+
     document.documentElement.classList.add('js-ready');
   });
 })();
