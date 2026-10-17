@@ -36,4 +36,5 @@
 - **缓存版本号**：改了 `styles.css` 或 `app.js`，就要在 `index.html` 里把对应的 `?v=N` 加 1。
 - **新增学院**：`app.js` 的 `colleges`、`#colleges` 卡片、`#student-college` 的 `<option>`，三处都要改。
 - **新增或删除图片**：同步更新 README 的目录结构。
+- **换校徽**：三个主屏幕图标（`assets/icon-180.png`、`icon-192.png`、`icon-512.png`）是从 `assets/seal.svg` 导出的，换了校徽要按这三个尺寸重新导出。
 - **新增不上线的文件**（文档、配置）：在 `.gitattributes` 中标 `export-ignore`；如果只改它不需要重新部署，再加进 `deploy.yml` 的 `paths-ignore`。

@@ -1,0 +1,16 @@
+{
+  "id": "/",
+  "name": "大连奶龙大学",
+  "short_name": "奶龙大学",
+  "description": "山海之间，快乐上线。以大连东软校园为灵感的奶龙大学趣味创作：六所脑洞学院、校园漫游、入学纪念卡。非官方、非招生网站。",
+  "lang": "zh-CN",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#142638",
+  "icons": [
+    { "src": "/assets/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}

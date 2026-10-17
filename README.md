@@ -25,6 +25,7 @@
 - **新闻筛选**：按 `data-category` 过滤，按钮状态用 `aria-pressed` 标记。
 - **移动端导航**：汉堡菜单，760px 以下启用。
 - **回到顶部**：滚动超过 600px 后出现。
+- **添加到主屏幕**：`site.webmanifest` 加上三个主屏幕图标（由校徽 `seal.svg` 导出）。iOS 加到主屏幕会用它们当图标和名称；**站点没有 Service Worker**，所以 Chrome 不会弹安装提示、也没有独立窗口——纯静态站不想引入缓存住旧内容的麻烦。
 - 系统开启「减少动态效果」（`prefers-reduced-motion`）时，关闭平滑滚动和动画。
 
 站点没有任何网络请求、Cookie、`localStorage` 和第三方统计脚本。
@@ -49,7 +50,11 @@
 │   ├── campus-autumn.webp    # 校园生活卡片 · 漫游校园；数字摸鱼艺术学院页配图
 │   ├── campus-life.webp      # 校园生活卡片 · SOVO；SOVO 导览弹窗配图；零食数字商学院页配图
 │   ├── campus-seasons.webp   # 校园生活卡片 · 四季；四季导览弹窗配图；龙语国际交流学院页配图
-│   └── seal.svg              # 趣味校徽，同时作为 favicon
+│   ├── seal.svg              # 趣味校徽，同时作为 favicon
+│   ├── icon-180.png          # 主屏幕图标（iOS「添加到主屏幕」），由校徽导出
+│   ├── icon-192.png          # 主屏幕图标，site.webmanifest 里声明的 192×192
+│   └── icon-512.png          # 主屏幕图标，site.webmanifest 里声明的 512×512
+├── site.webmanifest  # Web App Manifest：名称、图标、主题色
 ├── robots.txt
 └── sitemap.xml
 ```
@@ -118,6 +123,7 @@ font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-a
 - 同一时间只会有一个部署在跑，后来的排队等候。
 - 想回滚到更早的版本，需要登录服务器手动切换 `current` 软链。
 - 部署用到的 Secrets：`DEPLOY_SSH_KEY`、`DEPLOY_HOST`、`DEPLOY_KNOWN_HOSTS`。服务器地址和密钥都不在代码里。
+- `site.webmanifest` 要按 `application/manifest+json` 下发：nginx 默认的 `mime.types` 不认 `.webmanifest` 扩展名，不配的话浏览器会拒收这个文件。
 
 站点前面有 CDN，HTTPS 由 CDN 终止。发布后如果线上没更新，需要刷新 CDN 缓存。修改 CSS/JS 时记得递增 `?v=`。
 
