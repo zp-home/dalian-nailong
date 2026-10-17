@@ -25,6 +25,7 @@
 - **新闻筛选**：按 `data-category` 过滤，按钮状态用 `aria-pressed` 标记。
 - **移动端导航**：汉堡菜单，760px 以下启用。
 - **回到顶部**：滚动超过 600px 后出现。
+- **分享卡片**：每个页面都带 `og:*` 与 `twitter:*`，`twitter:card` 用 `summary_large_image`，配图与 `og:image` 是同一张。分享到 X 或聊天工具时，标题、描述与配图取自页面自己，而不是继承首页的。
 - 系统开启「减少动态效果」（`prefers-reduced-motion`）时，关闭平滑滚动和动画。
 
 站点没有任何网络请求、Cookie、`localStorage` 和第三方统计脚本。

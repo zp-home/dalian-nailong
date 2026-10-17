@@ -35,5 +35,6 @@
 - **CSP**：不写内联 `<script>` / `<style>` / `style=""` / `onclick=`，不引用外部 CDN 资源。细则见 README「内容安全策略」。
 - **缓存版本号**：改了 `styles.css` 或 `app.js`，就要在 `index.html` 里把对应的 `?v=N` 加 1。
 - **新增学院**：`app.js` 的 `colleges`、`#colleges` 卡片、`#student-college` 的 `<option>`，三处都要改。
+- **分享卡片**：每个页面都带 `og:*` 与 `twitter:*`，`twitter:card` 固定 `summary_large_image`，`og:image` 与 `twitter:image` 必须是同一张。新增页面时照着现有页面的 `<head>` 抄一份，别忘了 `og:site_name`。
 - **新增或删除图片**：同步更新 README 的目录结构。
 - **新增不上线的文件**（文档、配置）：在 `.gitattributes` 中标 `export-ignore`；如果只改它不需要重新部署，再加进 `deploy.yml` 的 `paths-ignore`。
