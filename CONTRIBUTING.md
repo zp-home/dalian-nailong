@@ -33,7 +33,8 @@
 线上有 CSP 和 CDN 缓存，下面几条本地预览时看不出问题，上线后才会出错：
 
 - **CSP**：不写内联 `<script>` / `<style>` / `style=""` / `onclick=`，不引用外部 CDN 资源。细则见 README「内容安全策略」。
-- **缓存版本号**：改了 `styles.css` 或 `app.js`，就要在 `index.html` 里把对应的 `?v=N` 加 1。
+- **缓存版本号**：改了 `styles.css` 或 `app.js`，就要把**全部 10 个页面**（含 `404.html`）里对应的 `?v=N` 加 1，并保持一致。`404.html` 的站内链接和本站资源写的是根绝对路径（`/styles.css`、`/index.html#about`），因为它会在任意深度被访问；其余页面的顶栏、页脚用的是相对路径，改导航时两边都要改。
+- **404 页要生效需服务器配置**：nginx 上要有 `error_page 404 /404.html;`，只提交文件不会自动生效。
 - **新增学院**：`app.js` 的 `colleges`、`#colleges` 卡片、`#student-college` 的 `<option>`，三处都要改。
 - **新增或删除图片**：同步更新 README 的目录结构。
 - **新增不上线的文件**（文档、配置）：在 `.gitattributes` 中标 `export-ignore`；如果只改它不需要重新部署，再加进 `deploy.yml` 的 `paths-ignore`。

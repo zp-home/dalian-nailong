@@ -50,6 +50,7 @@
 │   ├── campus-life.webp      # 校园生活卡片 · SOVO；SOVO 导览弹窗配图；零食数字商学院页配图
 │   ├── campus-seasons.webp   # 校园生活卡片 · 四季；四季导览弹窗配图；龙语国际交流学院页配图
 │   └── seal.svg              # 趣味校徽，同时作为 favicon
+├── 404.html          # 地址写错时显示的页面；站内链接写根绝对路径
 ├── robots.txt
 └── sitemap.xml
 ```
@@ -117,6 +118,7 @@ font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-a
 - 只改 `README.md`、`CONTRIBUTING.md`、PR 模板的推送不触发部署。需要重新发布时，可以在 Actions 页面手动运行「部署到线上」。
 - 同一时间只会有一个部署在跑，后来的排队等候。
 - 想回滚到更早的版本，需要登录服务器手动切换 `current` 软链。
+- `404.html` 要生效，服务器需要配置 `error_page 404 /404.html;`，否则访客看到的是服务器自带的错误页。
 - 部署用到的 Secrets：`DEPLOY_SSH_KEY`、`DEPLOY_HOST`、`DEPLOY_KNOWN_HOSTS`。服务器地址和密钥都不在代码里。
 
 站点前面有 CDN，HTTPS 由 CDN 终止。发布后如果线上没更新，需要刷新 CDN 缓存。修改 CSS/JS 时记得递增 `?v=`。
